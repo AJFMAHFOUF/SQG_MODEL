@@ -4,11 +4,11 @@ import numpy as np
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 nlats=48 ; nlons=97
-nstep='0120'
+nstep='0240'
 trunc='031'
-expid='300'
-var='phi'
-level='500'
+expid='104'
+var='t'
+level='200'
 omega = 2.*np.pi/86400.0
 #plt.figure(figsize=(10,10))
 plt.figure(figsize=(8,4))
@@ -27,14 +27,14 @@ lon1,lat1,vor,u,v,psi,phi,t=np.loadtxt('../data_out/SQG_T'+trunc+'_lev_'+level+'
 lat2 = lat1.reshape((nlats,nlons))
 lon2 = lon1.reshape((nlats,nlons))
 
-proj = ccrs.Orthographic(central_longitude=-90.0,central_latitude=40.0)
-proj = ccrs.NorthPolarStereo(central_longitude=-90.0)
-#proj = ccrs.PlateCarree()
+#proj = ccrs.Orthographic(central_longitude=20.0,central_latitude=40.0)
+#proj = ccrs.NorthPolarStereo(central_longitude=20.0)
+proj = ccrs.PlateCarree()
 #proj = ccrs.LambertConformal(central_longitude=-85.0,central_latitude=45.0,cutoff=0.0)
 #proj = ccrs.LambertConformal(central_longitude=-65.0,central_latitude=45.0,cutoff=0.0)
 ax = plt.axes(projection=proj)
 ax.coastlines('110m',linewidth=1.5,color='purple')
-ax.set_extent([-180, 180, 90, 20], ccrs.PlateCarree()) # North hemisphere
+ax.set_extent([-135, 180, 90, 00], ccrs.PlateCarree()) # North hemisphere
 #ax.set_extent([-120, -20, 20, 85]) # North America
 gl = ax.gridlines(crs=ccrs.PlateCarree(),linewidth=1,color='black',alpha=0.5)
 gl.ylocator = mticker.FixedLocator(np.arange(-90,90,15))
@@ -63,8 +63,8 @@ if var == 'phi':
 	#cs = map.contourf(x,y,field/9.81,levels=np.arange(4900,5200,25),cmap='jet')	
 	#cs = map.contour(x,y,field/98.1,levels=np.arange(460,590,10),colors='black')
 	#cs = ax.contour(lon2,lat2,field/9.81,levels=np.arange(10500,12800,100),linewidths=0.1,transform=ccrs.PlateCarree(),colors='black')
-	cs = ax.contourf(lon2,lat2,field/9.81,transform=ccrs.PlateCarree(),cmap='jet')
-	cs = ax.contour(lon2,lat2,field/9.81,linewidths=0.1,transform=ccrs.PlateCarree(),colors='black')
+	cs = ax.contourf(lon2,lat2,field/9.81,transform=ccrs.PlateCarree(),cmap='gist_rainbow')
+	cs = ax.contour(lon2,lat2,field/9.81,linewidths=0.6,transform=ccrs.PlateCarree(),colors='black')
 	#cs = ax.contourf(lon2,lat2,field/9.81,levels=np.arange(4600,5900,100),transform=ccrs.PlateCarree(),cmap='jet')
 	#cs = map.contour(x,y,field,10,colors='black')
 	#cs = map.contourf(x,y,field,10,cmap='seismic')
@@ -74,8 +74,8 @@ else:
 	#cs = ax.contourf(lon2,lat2,field,levels=np.arange(-50,60,10),transform=ccrs.PlateCarree(),cmap='seismic')
 	#cs = ax.contour(lon2,lat2,field,levels=np.arange(-25,60,10),linewidths=0.1,transform=ccrs.PlateCarree(),colors='black')
 	#cs = ax.contourf(lon2,lat2,field,levels=np.arange(-25,60,10),transform=ccrs.PlateCarree(),cmap='jet')#'RdPu')
-	cs = ax.contour(lon2,lat2,field*1E6,linewidths=0.1,transform=ccrs.PlateCarree(),colors='black')
-	cs = ax.contourf(lon2,lat2,field*1E6,transform=ccrs.PlateCarree(),cmap='seismic')#'RdPu')
+	cs = ax.contour(lon2,lat2,field,linewidths=0.6,transform=ccrs.PlateCarree(),colors='black')
+	cs = ax.contourf(lon2,lat2,field,transform=ccrs.PlateCarree(),cmap='gist_rainbow')#'RdPu')
 	#map.quiver(x[::1,::1],y[::1,::1],field1[::1,::1],field2[::1,::1],z[::1,::1],width=0.002,headwidth=2,scale=0.1,scale_units='xy',cmap='jet')
 #plt.colorbar(shrink=0.5)
 cbar = plt.colorbar(cs,orientation='vertical',shrink=0.5,pad=0.07)

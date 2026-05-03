@@ -8,11 +8,13 @@ subroutine init
  implicit none
  
  integer            :: i1, i2, j1, ilev
- real               :: zlon, zlat, zzz, zweight
+ real               :: zlon, zlat, zzz, zweight, dist, upert, dist2r
  real, dimension(3) :: zfield
  character(len=3)   :: tt
  character(len=2)   :: tt1
- character(len=3), dimension(3) :: plev   
+ character(len=3), dimension(3) :: plev  
+ real, dimension(3) :: zetav 
+ real, parameter    :: zlatc=40.0, zlonc=20.0, R0=0.1*a, zconv=pi/180.0, zeta0=0.252, ps=1000.0
  
  real, dimension(nlat) :: z_umean, z_vmean
 
@@ -29,6 +31,10 @@ subroutine init
  write (plev(1),'(i3)') p1
  write (plev(2),'(i3)') p2
  write (plev(3),'(i3)') p3
+ 
+ zetav(1) = 0.5*pi*(p1/ps - zeta0)
+ zetav(2) = 0.5*pi*(p2/ps - zeta0)
+ zetav(3) = 0.5*pi*(p3/ps - zeta0)
  
 ! Initialisation prior FFT
 
@@ -68,17 +74,20 @@ subroutine init
        read(12+(ilev-1)*3,*) zlon, zlat, zfield(2)
        read(13+(ilev-1)*3,*) zlon, zlat, zfield(3)
        if (i1 /= nlon+1) then
-         zzz=cos(pi*zlat/180.)
+         zzz=cos(pi*zconv)
          !z_umean(j1) = z_umean(j1) + zfield(1)
          !z_vmean(j1) = z_vmean(j1) + zfield(2)
          utr(i1,j1,ilev) = zfield(1)
          vtr(i1,j1,ilev) = zfield(2) 
          phibar(ilev) = phibar(ilev) + zfield(3)*zzz 
          zweight = zweight + zzz 
-!         if (.not.l_real_ic) then
-!           utr(i1,j1) = 25.0*zzz - 30.0*zzz**3 + 300.0*(1.0-zzz**2)*zzz**6
-!           vtr(i1,j1) = 0.0
-!         endif
+         if (.not.l_real_ic) then
+           dist = a*acos(sin(zlatc*zconv)*sin(zlat*zconv) + cos(zlatc*zconv)*cos(zlat*zconv)*cos((zlon - zlonc)*zconv))
+           dist2r = min(700.0,(dist/R0)**2) ! security to avoid too large values in exp function
+           upert = 1.0*exp(-dist2r)
+           utr(i1,j1,ilev) = 35.0*cos(zetav(ilev))**(1.5)*(sin(2.0*zlat*zconv))**2 + upert
+           vtr(i1,j1,ilev) = 0.0
+         endif
        endif
      enddo 
    enddo  
@@ -95,7 +104,7 @@ subroutine init
    do i1 = 1,nlon+1
      read(20,*) zlon, zlat, zfield(1)
      if (i1 /= nlon+1) then
-       alt(i1,j1) = zfield(1)/g 
+       alt(i1,j1) = 0.0 ! zfield(1)/g 
      endif
    enddo
  enddo  

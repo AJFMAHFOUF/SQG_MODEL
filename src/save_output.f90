@@ -95,8 +95,8 @@ subroutine save_output(nstep)
 ! Back to physical space -  psi
 
  do ilev = 1,nlev
-   call legt_i(psi_m,psi_mn,0)
-   call fft_i(psi,psi_m)
+   call legt_i(psi_m(:,:,ilev),psi_mn(:,ilev),0)
+   call fft_i(psi(:,:,ilev),psi_m(:,:,ilev))
  enddo 
  
 ! Write results in ASCII file for plotting purposes

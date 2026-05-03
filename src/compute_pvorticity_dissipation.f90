@@ -8,7 +8,6 @@ subroutine compute_pvorticity_dissipation(tend_pvor_mn)
  
  complex, dimension(mmax,nlev), intent(out)  :: tend_pvor_mn
  integer :: i1, i2, j1, ms, js, j_index2
- real    :: zvor, ztheta0, zthetaw, zm, za, zlon, zlat
  real    :: d_legpol
 
 ! Physical space  
@@ -45,6 +44,8 @@ subroutine compute_pvorticity_dissipation(tend_pvor_mn)
  tend_pvor_mn(:,1) = R1*(psi2_mn(:,1) - psi2_mn(:,2))/tau_R
  tend_pvor_mn(:,2) = R2*(psi2_mn(:,2) - psi2_mn(:,3))/tau_R - R1*(psi2_mn(:,1) - psi2_mn(:,2))/tau_R
  tend_pvor_mn(:,3) = tend_pvor_mn(:,3) - R2*(psi2_mn(:,2) - psi2_mn(:,3))/tau_R
+ 
+ tend_pvor_mn(:,:) = (0.0,0.0)
       
  return
 

@@ -10,14 +10,15 @@ subroutine inverse_pvorticity
  
  real, dimension (nlev,nlev)          :: zb 
  complex, dimension (nlev)            :: zc
- integer :: js,ms,i2,i1,j_index2,ilev,jlev
+ integer :: js,ms,i2,i1,j_index2
  real    :: zzz, delta
  
 ! Explicit inversion of a (3x3) linear system A*Psi = (Pvor - f) => Psi = B*(Pvor - f)
 ! for each wave number (m,n) 
  
- psi_mn(:,:) = (0.0,0.0)
- vor_mn(:,:) = (0.0,0.0)
+ psi_mn(:,:)  = (0.0,0.0)
+ vor_mn(:,:)  = (0.0,0.0)
+ psi2_mn(:,:) = (0.0,0.0)
  
  do i1 = 0,mm
    ms=abs(i1)    

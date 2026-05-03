@@ -8,13 +8,6 @@ subroutine convert_vor2uv
  
  integer :: i1, i2, ms, js, jsm, jsp, j_index2, ilev
    
-! Physical fields required for non linear terms   
-  
- do ilev = 1,nlev
-   call legt_i(vor_m(:,:,ilev),vor_mn(:,ilev),0)
-   call fft_i(vor(:,:,ilev),vor_m(:,:,ilev))   
- enddo
-     
 ! Stream function (spectral)
 
  do ilev = 1,nlev

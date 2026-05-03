@@ -32,11 +32,13 @@ subroutine compute_balance_equation
    enddo  
  enddo
 
-! Back to physical space u wind component
+! Back to physical space for vorticity and U wind component
 
   do ilev = 1,nlev
     call legt_i(u_m(:,:,ilev),u_mn(:,ilev),1)
     call fft_i(u(:,:,ilev),u_m(:,:,ilev)) 
+    call legt_i(vor_m(:,:,ilev),vor_mn(:,ilev),0)
+    call fft_i(vor(:,:,ilev),vor_m(:,:,ilev))   
   enddo 
 ! 
 ! Physical space - compute div (f x nabla psi) - Eq.(7.5.3) from Daley (1991)!

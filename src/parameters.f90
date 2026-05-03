@@ -18,20 +18,20 @@ module params
  real, parameter    :: nu = 0.02, wk = 0.53   ! tunable parameters for 2*dt filter 
  real, parameter    :: kdiff = 5.00E16        ! Coefficient for horizontal diffusion
  real, parameter    :: dt  = 3600.0           ! model time step
- integer, parameter :: nhtot = 120            ! number of hours of model integration
+ integer, parameter :: nhtot = 300            ! number of hours of model integration
  integer, parameter :: npdt = nhtot*3600/dt   ! number of model time steps
  integer, parameter :: nfreq = 24*3600/dt     ! hourly output archiving frequency
- character(len=3)   :: expid='100'            ! experiment identifier
+ character(len=3)   :: expid='105'            ! experiment identifier
  character(len=8)   :: cdate='21121978'       ! DDMMYYY : date of initial conditions  
  character(len=2)   :: chour='00'             ! HH : GMT hour of initial conditions
  logical            :: lreaduv=.true.         ! logical to use u v at initial time
- logical            :: l_real_ic=.true.       ! logical to consider true or analytical initial conditions
+ logical            :: l_real_ic=.false.      ! logical to consider true or analytical initial conditions
 
 ! Following parameters taken from Marshall and Molteni (1993)
 
  integer, parameter    :: p1 = 200, p2 = 500, p3 = 800 ! Vertical grid wil 3 pressure levels in hPa 
- real, parameter       :: R1 = 1.0/(7.0E5)**2          ! Rossby radius of deformation (between layers 1 and 2)
- real, parameter       :: R2 = 1.0/(4.0E5)**2          ! Rossby radius of deformation (between layers 2 and 3)
+ real, parameter       :: R1 = 1.0/(6.0E5)**2          ! Rossby radius of deformation (between layers 1 and 2)
+ real, parameter       :: R2 = 1.0/(3.0E5)**2          ! Rossby radius of deformation (between layers 2 and 3)
  real, parameter       :: H0 = 9.0E3                   ! Vertical scale of height (m) 
  real, parameter       :: tau_E = 1.0*86400.0          ! Time scale for Ekman dissipation
  real, parameter       :: tau_R = 25.0*86400.0         ! Time scale for temperature relaxation
@@ -46,7 +46,7 @@ module model_vars
  implicit none
  
  real, dimension (nlon,nlat,nlev) :: pvor               ! prognostic variable  in physical space
- real, dimension (nlon,nlat,nlev) :: psi, u, v, ke, vor ! diagnostic variables in physical space
+ real, dimension (nlon,nlat,nlev) :: psi, u, v, vor     ! diagnostic variables in physical space
  real, dimension (nlon,nlat,nlev) :: u2, v2             ! winds at previous time step for dissipative processes
  real, dimension (nlon,nlat,nlev) :: phi                ! geopotential (diagnosed from balance equation)
  real, dimension (nlon,nlat,nlev) :: utr, vtr           ! u and v winds in geographical coordinates
@@ -60,15 +60,16 @@ module model_vars
  
  complex, dimension(nlat,-mm:mm,nlev) :: pvor_m, vor_m
  complex, dimension(nlat,-mm:mm,nlev) :: upvor_m, vpvor_m
- complex, dimension(nlat,-mm:mm,nlev) :: psi_m, u_m, v_m, ke_m  
+ complex, dimension(nlat,-mm:mm,nlev) :: psi_m, u_m, v_m  
  complex, dimension(nlat,-mm:mm,nlev) :: phi_m
  complex, dimension(nlat,-mm:mm,nlev) :: u2_m, v2_m
  
- complex, dimension(mmax,nlev,3) :: pvor_mn             ! prognostic variable in spectral space (3 time steps)
- complex, dimension(mmax,nlev)   :: psi_mn, u_mn, v_mn, ke_mn, vor_mn
- complex, dimension(mmax,nlev)   :: phi_mn              ! geopotential (diagnosed)
- complex, dimension(mmax)        :: f_mn, f2_mn         ! Coriolis factor and modified Coriolis factor
- complex, dimension(mmax,nlev)   :: psi2_mn, u2_mn, v2_mn
+ complex, dimension(mmax,nlev,3) :: pvor_mn               ! prognostic variable in spectral space (3 time steps)
+ complex, dimension(mmax,nlev)   :: psi_mn                ! streamfunction (diagnosed)
+ complex, dimension(mmax,nlev)   :: u_mn, v_mn, vor_mn    ! U/V wind components + vorticity (diagnosed)
+ complex, dimension(mmax,nlev)   :: phi_mn                ! geopotential (diagnosed)
+ complex, dimension(mmax)        :: f_mn, f2_mn           ! Coriolis factor and modified Coriolis factor
+ complex, dimension(mmax,nlev)   :: psi2_mn, u2_mn, v2_mn ! additional storage of variables at time (t-dt) 
  
  type prog_var
    complex, dimension(mmax) :: pvormn1

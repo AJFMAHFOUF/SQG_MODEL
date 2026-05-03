@@ -27,8 +27,6 @@ subroutine model(xin,xout,dt1,npdt_max,loutput)
  do nstep = 0,npdt_max-1
        
    call convert_vor2uv
- 
-   call compute_kinetic_energy
    
 !  Tendencies from dynamics (advection of PV by rotational wind)   - use time step 2
  
